@@ -1,0 +1,17 @@
+{# templates/game/selector/index.html.twig #} {% extends 'base.html.twig' %} {% block
+body %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card bg-light mb-3 mt-3">
+      {{ form_start(form) }}
+	  <button class="btn btn-outline-secondary" type="submit" name="new">New game</button>		
+	  {% for game in games %}
+	    <button class="btn btn-outline-secondary" type="submit" name="button[]" value={{game.id}}> {{game.name}}</button>		          
+      {% endfor %}		
+	  {{ form_end(form) }}
+	  </div>	
+    </div>
+ </div>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{# templates/play/index.html.twig #} {% extends 'base.html.twig' %} {% block
+body %}   
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+
+	    {{ form_start(form) }}
+		{% if app.user != null %}	
+          <h3>		
+		    {% if game.lastMoveUserName == app.user.name %}
+			    <div>
+				  <span class="badge badge-pill badge-warning">Waiting for second user go ...</span>
+				</div>
+				<div> <label> </label></div>
+            {% endif %}
+			<span class="badge badge-pill badge-danger">X-{{game.firstUserName}}</span>
+		    {%if(game.secondUserName!=null)%}
+		        <span class="badge badge-pill  badge-success">        O-{{game.secondUserName}}</span>
+		    {% endif %}
+	      </h3>
+		  <div> <label> </label></div>
+		    {% for x in 0..game.size-1%}
+			  <div>
+			  {% for y in 0..game.size-1%}
+            
+		        {% if play[y+x*game.size].userName == null %}
+				 {% if game.lastMoveUserName == app.user.name %}
+				    <button class="btn btn-outline-secondary" type="button">
+					    <svg width="3em" height="3em" viewBox="0 0 16 16" class="bi bi-dot" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+                        </svg>
+                    </button>
+				{% else %}
+				<button class="btn btn-outline-secondary" type="submit" name="cell[]" id="Send" value="{{play[y+x*game.size].x}} {{play[y+x*game.size].y}}" >
+					    <svg width="3em" height="3em" viewBox="0 0 16 16" class="bi bi-dot" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+                        </svg>
+                    </button>
+				{% endif %}	 
+				{% elseif play[y+x*game.size].userName == game.firstUserName %}
+				    <button class="btn btn-danger" type="button">
+					    <svg width="3em" height="3em" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					        <path fill-rule="evenodd" d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"/>
+					        <path fill-rule="evenodd" d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"/>
+					    </svg>
+					</button>
+				{% else %}
+                    <button class="btn btn-success" type="button">
+					    <svg width="3em" height="3em" viewBox="0 0 16 16" class="bi bi-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        </svg>
+					</button>
+			    {% endif %}	  
+		    {% endfor %}
+			</div>
+			{% endfor %}			
+	    {% endif %}    
+        <script type="text/javascript">
+            const socket = new WebSocket("ws://localhost:3001"); 
+            socket.addEventListener("message", function(e) {
+              location.reload();
+			}); 
+            document.getElementById("Send").addEventListener("click", function(e) {
+               const message = "go";
+               socket.send(JSON.stringify(message));
+			});
+        </script>
+	    {{ form_end(form) }}
+      {% if app.user == null %}
+      <a href="{{ path('app_login') }}" class="btn btn-info">
+        You need to login to see the list >></a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
